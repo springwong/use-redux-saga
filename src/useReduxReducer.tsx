@@ -5,18 +5,17 @@ import { reducerManager } from './reducerManager';
 
 export function useReduxReducer<Type>(reducer: ((state: Type, action: any) => Type), key: string = uuidv4(), cleanUp: boolean = false) {
     if (!reducerManager) {
-        console.warn("useReduxReducer without init reducerManager")
+        console.warn("useReduxReducer without init reducerManager");
     }
-    reducerManager?.addReducer(key, reducer)
-    const state = useSelector((state: any) => state[key])
-    const dispatch = useDispatch()
+    reducerManager?.addReducer(key, reducer);
+    const state = useSelector((state: any) => state[key]);
+    const dispatch = useDispatch();
     useEffect(() => {
-        return () => {
-            // clean up
+        return () => { // clean up
             if (cleanUp) {
                 reducerManager?.removeReducer(key)
             }
         }
-    }, [])
-    return [state, dispatch] as const
+    }, []);
+    return [state, dispatch] as const;
 }
