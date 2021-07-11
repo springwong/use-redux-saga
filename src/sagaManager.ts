@@ -1,9 +1,11 @@
+
 type SagaManager = {
     logSaga: () => void;
     addSaga: (key: string, saga: (params: any) => Generator, params: any) => void,
     removeSaga: (key: string) => void;
 }
 
+export let runSaga: any;
 export let sagaManager: SagaManager | undefined = undefined;
 
 export function createSagaManager(runSaga: any, rootSaga: () => Generator, runSagaParams: any = {}): SagaManager { // Create a dictionary to keep track of injected sagas
