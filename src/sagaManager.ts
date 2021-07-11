@@ -7,9 +7,9 @@ type SagaManager = {
 export let sagaManager: SagaManager | undefined = undefined;
 
 export function createSagaManager(runSaga: any, rootSaga: () => Generator, runSagaParams: any = {}): SagaManager { // Create a dictionary to keep track of injected sagas
-    const injectedSagas = new Map();
+    const sagas: any = {};
 
-    const isInjected = (key: string) => injectedSagas.has(key);
+    const isInjected = (key: string) => key in sagas;
 
     const addSaga = (key: string, saga: (params: any) => Generator, params: any) => { // We won't run saga if it is already injected
         if (isInjected(key))
@@ -20,23 +20,23 @@ export function createSagaManager(runSaga: any, rootSaga: () => Generator, runSa
         const task = runSaga(saga, params);
 
         // Save the task if we want to cancel it in the future
-        injectedSagas.set(key, task);
+        sagas[key] = task;
     };
 
     const removeSaga = (key: string) => { // We won't run saga if it is already injected
         if (!isInjected(key))
             return;
 
-        const task = injectedSagas.get(key);
+        const task = sagas[key];
         task.cancel();
 
-        injectedSagas.delete(key)
+        delete sagas[key];
     };
 
     const logSaga = () => {
-        injectedSagas.forEach((_value, _key, _map) => {
-            console.log(_key)
-        })
+        Object.keys(sagas).forEach(key => {
+            console.log(key);
+        });
     }
 
     // Inject the root saga as it a staticlly loaded file,
