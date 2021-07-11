@@ -7,7 +7,7 @@ import { runSaga } from "./sagaManager";
 
 export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type) {
     if (!runSaga) {
-        console.warn("useSaga without init sagaRun");
+        console.warn("useSaga without init setRunSaga");
     }
     const ref = useRef<Task>();
     if (!ref.current) {

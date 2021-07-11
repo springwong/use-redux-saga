@@ -5,7 +5,10 @@ type SagaManager = {
     removeSaga: (key: string) => void;
 }
 
-export let runSaga: any;
+export let runSaga: any = undefined;
+export function setRunSaga(middlewareRun: any) {
+    runSaga = middlewareRun;
+}
 export let sagaManager: SagaManager | undefined = undefined;
 
 export function createSagaManager(runSaga: any, rootSaga: () => Generator, runSagaParams: any = {}): SagaManager { // Create a dictionary to keep track of injected sagas
