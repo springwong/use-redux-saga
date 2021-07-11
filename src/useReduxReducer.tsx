@@ -22,7 +22,7 @@ export function useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: s
     return [ state, dispatch ] as const;
 }
 
-export function useReduxSingleReducer<S = any, A = any>(reducer: Reducer<S, A>) {
+export function useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>) {
     const keyRef = useRef(uuidv4());
     return useReduxReducer(reducer, keyRef.current, true,)
 }

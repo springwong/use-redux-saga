@@ -1,17 +1,17 @@
 import {reducerManager, createReducerManager} from "./reducerManager";
 import {sagaManager, createSagaManager} from "./sagaManager";
-import {useReduxReducer, useReduxSingleReducer, ReduxReducerProvider} from "./useReduxReducer";
-import {useEffectSaga, useSaga, useSingleSaga} from "./useSaga";
+import {useReduxReducer, useReduxReducerLocal, ReduxReducerProvider} from "./useReduxReducer";
+import {useSagaEffect, useSaga, useSagaSimple} from "./useSaga";
 
 export {
     reducerManager,
-    useReduxReducer,
     sagaManager,
+    useReduxReducer,
+    useReduxReducerLocal,
     useSaga,
-    useSingleSaga,
-    useEffectSaga,
+    useSagaEffect,
+    useSagaSimple,
     createReducerManager,
     createSagaManager,
-    useReduxSingleReducer,
     ReduxReducerProvider
 }
