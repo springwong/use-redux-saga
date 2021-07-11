@@ -1,12 +1,11 @@
 {
   "name": "use-redux-saga",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "use-redux-saga is a library to apply saga with react hooks API in a simple way",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "npm publish --access public"
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
