@@ -1,13 +1,14 @@
+import { Reducer } from 'react';
 import {combineReducers, Store, CombinedState} from 'redux';
 type ReducerManager = {
     getReducerMap: () => any;
-    addReducer: (key : string, reducer : any) => void,
-    removeReducer: (key : string) => void;
+    addReducer: (key : string, reducer : Reducer<any, any>, store: Store) => void,
+    removeReducer: (key : string, store: Store) => void;
 }
 
 export let reducerManager: ReducerManager |undefined = undefined;
 
-export function createReducerManager(initialReducers: any, store: Store) { // Create an object which maps keys to reducers
+export function createReducerManager(initialReducers: any) { // Create an object which maps keys to reducers
     const reducers = {
         ... initialReducers
     };
@@ -16,7 +17,7 @@ export function createReducerManager(initialReducers: any, store: Store) { // Cr
     let combinedReducer: CombinedState<any> = combineReducers(reducers);
 
     // An array which is used to delete state keys when reducers are removed
-    let keysToRemove: Array<string> = [];
+    // let keysToRemove: Array<string> = [];
 
     reducerManager = {
         getReducerMap: () => reducers,
@@ -38,7 +39,7 @@ export function createReducerManager(initialReducers: any, store: Store) { // Cr
         // },
 
         // Adds a new reducer with the specified key
-        addReducer: (key : string, reducer : any) => {
+        addReducer: function<S = any, A = any>(key : string, reducer : Reducer<S,A>, store: Store) {
             if (!key || reducers[key]) {
                 return;
             }
@@ -52,7 +53,7 @@ export function createReducerManager(initialReducers: any, store: Store) { // Cr
         },
 
         // Removes a reducer with the specified key
-        removeReducer: (key : string) => {
+        removeReducer: (key : string, store: Store) => {
             if (!key || ! reducers[key]) {
                 return;
             }
@@ -61,7 +62,7 @@ export function createReducerManager(initialReducers: any, store: Store) { // Cr
             delete reducers[key];
 
             // Add the key to the list of keys to clean up
-            keysToRemove.push(key);
+            // keysToRemove.push(key);
 
             // Generate a new combined reducer
             combinedReducer = combineReducers(reducers);

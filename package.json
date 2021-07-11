@@ -1,13 +1,17 @@
 {
   "name": "use-redux-saga",
-  "version": "1.0.0",
+  "version": "1.0.17",
   "description": "use-redux-saga is a library to apply saga with react hooks API in a simple way",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsc",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Spring Wong",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:springwong/use-redux-saga.git"
+  },
+  "author": "Spring Wong <rudolphwong2002@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/react-redux": "^7.1.18",
@@ -24,11 +28,5 @@
     "react-redux": "^7.2.4",
     "redux-saga": "^1.1.3",
     "uuid": "^8.3.2"
-  },
-  "optionalDependencies": {
-    "react-native-get-random-values": "^1.7.0"
-  },
-  "dependencies": {
-    "react-native-get-random-values": "^1.7.0"
   }
 }

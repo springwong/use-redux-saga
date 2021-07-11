@@ -1,43 +1,61 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { sagaManager } from './sagaManager';
+import { Task } from "redux-saga";
+import { takeLatest } from "redux-saga/effects";
+import { useDispatch } from "react-redux";
+import { runSaga } from "./sagaManager";
 
-export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type, key: string = uuidv4(), cleanUp: boolean = true) {
-    sagaManager?.addSaga(key, rootSaga, saga);
-    const dispatch = useDispatch()
-
-    const removeSaga = () => {
-        sagaManager?.removeSaga(key)
+export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type) {
+    if (!runSaga) {
+        console.warn("useSaga without init setRunSaga");
     }
+    const ref = useRef<Task>();
+    if (!ref.current) {
+        ref.current = runSaga(rootSaga, saga);
+    }
+
+    useEffect(() => {
+        if (!ref.current) {
+            ref.current = runSaga(rootSaga, saga);
+        }
+        if (ref.current && ref.current.isCancelled()) {
+            ref.current = runSaga(rootSaga, saga);
+        }
+    }, [])
+
     useEffect(() => {
         return () => { // clean up
-            if (cleanUp) {
-                removeSaga();
+            if (ref.current) {
+                ref.current.cancel();
             }
         }
     }, []);
 
-    return [key, dispatch, removeSaga] as const
+    return ref.current as Task;
 }
 
-export function useSingleSaga<Type>(effect: any, saga: (sages: Type) => Generator, key: string = uuidv4(), cleanUp: boolean = true) {
-    const [uniqueID, dispatch, removeSaga] = useSaga(function* (saga) {
-        yield effect(key, saga);
-    }, saga, key, cleanUp);
+export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest) {
+    const keyRef = useRef<string>();
+    if(!keyRef.current) {
+        keyRef.current = uuidv4();
+    }
+    const task = useSaga(function* (saga) {
+        yield effect(keyRef.current, saga);
+    }, saga);
 
+    const dispatch = useDispatch();
     const dispatchPayload = (payload: any) => {
         dispatch({
-            type: key,
+            type: keyRef.current,
             payload
         })
     }
 
-    return [uniqueID, dispatch, removeSaga, dispatchPayload] as const;
+    return [task, dispatchPayload];
 }
 
-export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generator, deps: Array<any> = [], blockInitCall: boolean = false, key: string = uuidv4(), cleanUp: boolean = true) {
-    const [uniqueID, dispatch, dispatchPayload, removeSaga] = useSingleSaga<Type>(effect, saga, key, cleanUp);
+export function useSagaEffect<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest, deps: Array<any> = [], blockInitCall: boolean = false) {
+    const [task, dispatchPayload] = useSagaSimple<Type>(effect, saga);
 
     const [block, setBlock] = useState(blockInitCall);
     useEffect(() => {
@@ -45,11 +63,10 @@ export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generato
             setBlock(false);
             return;
         }
-        dispatch({
-            type: key,
-            payload: {}
-        })
+        const _dispatchPayload = dispatchPayload as ((payload: any) => void);
+        _dispatchPayload({})
     }, deps);
 
-    return [uniqueID, dispatch, removeSaga, dispatchPayload] as const;
+    return [task, dispatchPayload];
 }
+
