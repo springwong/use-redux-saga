@@ -1,7 +1,8 @@
+import { Reducer } from 'react';
 import {combineReducers, Store, CombinedState} from 'redux';
 type ReducerManager = {
     getReducerMap: () => any;
-    addReducer: (key : string, reducer : any, store: Store) => void,
+    addReducer: (key : string, reducer : Reducer<any, any>, store: Store) => void,
     removeReducer: (key : string, store: Store) => void;
 }
 
@@ -38,7 +39,7 @@ export function createReducerManager(initialReducers: any) { // Create an object
         // },
 
         // Adds a new reducer with the specified key
-        addReducer: (key : string, reducer : any, store: Store) => {
+        addReducer: function<S = any, A = any>(key : string, reducer : Reducer<S,A>, store: Store) {
             if (!key || reducers[key]) {
                 return;
             }
