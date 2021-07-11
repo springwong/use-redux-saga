@@ -18,5 +18,5 @@ export function useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: s
             }
         }
     }, []);
-    return { state, dispatch };
+    return [ state, dispatch ] as const;
 }

@@ -17,11 +17,11 @@ export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type, 
         }
     }, []);
 
-    return { key, removeSaga }
+    return [key, removeSaga ] as const
 }
 
 export function useSingleSaga<Type>(effect: any, saga: (sages: Type) => Generator, key: string = uuidv4(), cleanUp: boolean = true) {
-    const { removeSaga } = useSaga(function* (saga) {
+    const [ _key, removeSaga ]= useSaga(function* (saga) {
         yield effect(key, saga);
     }, saga, key, cleanUp);
 
@@ -34,11 +34,11 @@ export function useSingleSaga<Type>(effect: any, saga: (sages: Type) => Generato
         })
     }
 
-    return { key, removeSaga, dispatchPayload };
+    return [key, dispatchPayload, removeSaga] as const;
 }
 
 export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generator, deps: Array<any> = [], blockInitCall: boolean = false, key: string = uuidv4(), cleanUp: boolean = true) {
-    const { dispatchPayload, removeSaga } = useSingleSaga<Type>(effect, saga, key, cleanUp);
+    const [_key, dispatchPayload, removeSaga] = useSingleSaga<Type>(effect, saga, key, cleanUp);
 
     const dispatch = useDispatch();
     const [block, setBlock] = useState(blockInitCall);
@@ -53,5 +53,5 @@ export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generato
         })
     }, deps);
 
-    return { key, removeSaga, dispatchPayload };
+    return [ key, dispatchPayload, removeSaga ] as const;
 }
