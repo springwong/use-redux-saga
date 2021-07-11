@@ -1,6 +1,6 @@
 type SagaManager = {
     logSaga: () => void;
-    addSaga: (key: string, saga: () => Generator, params: any) => void,
+    addSaga: (key: string, saga: (params: any) => Generator, params: any) => void,
     removeSaga: (key: string) => void;
 }
 
@@ -11,7 +11,7 @@ export function createSagaManager(runSaga: any, rootSaga: () => Generator): Saga
 
     const isInjected = (key: string) => injectedSagas.has(key);
 
-    const addSaga = (key: string, saga: () => Generator, params: any) => { // We won't run saga if it is already injected
+    const addSaga = (key: string, saga: (params: any) => Generator, params: any) => { // We won't run saga if it is already injected
         if (isInjected(key))
             return;
 
