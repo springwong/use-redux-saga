@@ -1,13 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { sagaManager } from './sagaManager';
 
-export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type, key: string = uuidv4(), cleanUp: boolean = true) {
-    sagaManager?.addSaga(key, rootSaga, saga);
+export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type) {
+    const keyRef = useRef(uuidv4());
+    const key = keyRef.current;
+    return useSaga2(rootSaga, saga, key, true)
+}
+
+export function useSaga2<Type>(rootSaga: (sages: Type) => Generator, saga: Type, uniqueKey: string = uuidv4(), cleanUp: boolean = true) {
+    sagaManager?.addSaga(uniqueKey, rootSaga, saga);
 
     const removeSaga = () => {
-        sagaManager?.removeSaga(key)
+        sagaManager?.removeSaga(uniqueKey)
     }
     useEffect(() => {
         return () => { // clean up
@@ -17,16 +23,17 @@ export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type, 
         }
     }, []);
 
-    return [key, removeSaga ] as const
+    return [uniqueKey, removeSaga]
 }
 
-export function useSingleSaga<Type>(effect: any, saga: (sages: Type) => Generator, key: string = uuidv4(), cleanUp: boolean = true) {
-    const [ _key, removeSaga ]= useSaga(function* (saga) {
+export function useSagaSimple<Type>(effect: any, saga: (sages: Type) => Generator) {
+    const keyRef = useRef(uuidv4());
+    const key = keyRef.current;
+    const [_, removeSaga]= useSaga2(function* (saga) {
         yield effect(key, saga);
-    }, saga, key, cleanUp);
+    }, saga, key, true);
 
     const dispatch = useDispatch();
-
     const dispatchPayload = (payload: any) => {
         dispatch({
             type: key,
@@ -34,11 +41,11 @@ export function useSingleSaga<Type>(effect: any, saga: (sages: Type) => Generato
         })
     }
 
-    return [key, dispatchPayload, removeSaga] as const;
+    return [key, dispatchPayload, removeSaga];
 }
 
-export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generator, deps: Array<any> = [], blockInitCall: boolean = false, key: string = uuidv4(), cleanUp: boolean = true) {
-    const [_key, dispatchPayload, removeSaga] = useSingleSaga<Type>(effect, saga, key, cleanUp);
+export function useSagaEffect<Type>(effect: any, saga: (sages: Type) => Generator, deps: Array<any> = [], blockInitCall: boolean = false) {
+    const [key, dispatchPayload, removeSaga] = useSagaSimple<Type>(effect, saga);
 
     const dispatch = useDispatch();
     const [block, setBlock] = useState(blockInitCall);
@@ -53,5 +60,5 @@ export function useEffectSaga<Type>(effect: any, saga: (sages: Type) => Generato
         })
     }, deps);
 
-    return [ key, dispatchPayload, removeSaga ] as const;
+    return [key, dispatchPayload, removeSaga];
 }
