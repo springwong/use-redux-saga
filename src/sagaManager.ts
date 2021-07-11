@@ -6,7 +6,7 @@ type SagaManager = {
 
 export let sagaManager: SagaManager | undefined = undefined;
 
-export function createSagaManager(runSaga: any, rootSaga: () => Generator): SagaManager { // Create a dictionary to keep track of injected sagas
+export function createSagaManager(runSaga: any, rootSaga: () => Generator, runSagaParams: any = {}): SagaManager { // Create a dictionary to keep track of injected sagas
     const injectedSagas = new Map();
 
     const isInjected = (key: string) => injectedSagas.has(key);
@@ -40,7 +40,7 @@ export function createSagaManager(runSaga: any, rootSaga: () => Generator): Saga
     }
 
     // Inject the root saga as it a staticlly loaded file,
-    addSaga('root', rootSaga, {});
+    addSaga('root', rootSaga, runSagaParams);
 
     sagaManager = {
         addSaga,
