@@ -1,6 +1,6 @@
 {
   "name": "use-redux-saga",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "use-redux-saga is a library to apply saga with react hooks API in a simple way",
   "main": "src/index.ts",
   "scripts": {
