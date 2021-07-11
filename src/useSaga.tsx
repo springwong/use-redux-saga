@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { sagaManager } from './sagaManager';
+import { takeLatest } from "redux-saga/effects";
 
 export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type) {
     const keyRef = useRef(uuidv4());
@@ -26,7 +27,7 @@ export function useSaga2<Type>(rootSaga: (sages: Type) => Generator, saga: Type,
     return [uniqueKey, removeSaga]
 }
 
-export function useSagaSimple<Type>(effect: any, saga: (sages: Type) => Generator) {
+export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest) {
     const keyRef = useRef(uuidv4());
     const key = keyRef.current;
     const [_, removeSaga]= useSaga2(function* (saga) {
@@ -44,7 +45,7 @@ export function useSagaSimple<Type>(effect: any, saga: (sages: Type) => Generato
     return [key, dispatchPayload, removeSaga];
 }
 
-export function useSagaEffect<Type>(effect: any, saga: (sages: Type) => Generator, deps: Array<any> = [], blockInitCall: boolean = false) {
+export function useSagaEffect<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest, deps: Array<any> = [], blockInitCall: boolean = false) {
     const [key, dispatchPayload, removeSaga] = useSagaSimple<Type>(effect, saga);
 
     const dispatch = useDispatch();
