@@ -1,17 +1,17 @@
 type SagaManager = {
     logSaga: () => void;
-    addSaga: (key: string, saga: any, params: any) => void,
+    addSaga: (key: string, saga: () => Generator, params: any) => void,
     removeSaga: (key: string) => void;
 }
 
 export let sagaManager: SagaManager | undefined = undefined;
 
-export function createSagaManager(runSaga: any, rootSaga: Generator): SagaManager { // Create a dictionary to keep track of injected sagas
+export function createSagaManager(runSaga: any, rootSaga: () => Generator): SagaManager { // Create a dictionary to keep track of injected sagas
     const injectedSagas = new Map();
 
     const isInjected = (key: string) => injectedSagas.has(key);
 
-    const addSaga = (key: string, saga: any, params: any) => { // We won't run saga if it is already injected
+    const addSaga = (key: string, saga: () => Generator, params: any) => { // We won't run saga if it is already injected
         if (isInjected(key))
             return;
 
