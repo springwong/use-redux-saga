@@ -27,7 +27,7 @@ yarn add use-redux-saga
 `use-redux-saga` required to init with the static reducers before combinedReducers.
 The way to insert reducer is based on [react redux document - code splitting](https://redux.js.org/usage/code-splitting)
 
-```
+```javascript
 // Your reducers object before combinedReducers
 const reducers = { todosReducer }
 
@@ -37,7 +37,7 @@ const reducers = { todosReducer }
 createReducerManager(reducers)
 ```
 ### Redux Saga
-```
+```javascript
 const sagaMiddleware = createSagaMiddleware({
   sagaMonitor
 });
@@ -57,7 +57,8 @@ setRunSaga(sagaMiddleware.run);
 |reducer|Reducer Type of react redux|
 |key|The reducer key for combinedReducers. The reducer will keep alive if cleanUp = false and cannot recreated.|
 |cleanUp|Default false, automatically remove reducer when FC destoryed if true.|
-```
+
+```javascript
 const SomeScreen: FC = () => {
     const [state, dispatch] = useReduxReducer((state = {
         value: 0
@@ -75,7 +76,7 @@ const SomeScreen: FC = () => {
 }
 ```
 or
-```
+```javascript
 const SomeScreen: FC = () => {
     // someReducer from normal reducer file.
     const [state, dispatch] = useReduxReducer(someReducer, "UniqueKey");
@@ -99,7 +100,7 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
 |rootSaga|the root Saga|
 |saga|sub sagas that will pass to rootSaga as parameter|
 
-```
+```javascript
 // sample to run saga in run time
     useSaga(function*(params: any) {
         yield takeLatest("TEST_1", params.add)
@@ -114,7 +115,7 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
 ```
 
 or 
-```
+```javascript
 // demoSaga is normal saga file with exported default. No params required in this case.
 useSaga(demoSaga, {})
 ```
@@ -123,7 +124,7 @@ useSaga(demoSaga, {})
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
 Always use dispatchPayload to trigger this saga.
 
-```
+```javascript
     const [task, dispatchPayload]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
         yield delay(1000)
         yield put({
@@ -149,7 +150,7 @@ useRedux is a more advanced hook to generic action in redux
 |state|init State|
 |payload|An object to process each return like normal reducer, 2nd param is payload but not action, action.type is hidden here which is object's key|
 
-```
+```javascript
     const [state, dispatches] = useRedux({
         value: 0
     }, {
@@ -177,15 +178,17 @@ useRedux is a more advanced hook to generic action in redux
 
 ### reducerManager
 Normally, don't need to get reducerManager object, but sometimes, you may need to remove reducer with removeReducer() method.
-```
-getReducerMap: () => any;
-addReducer: (key : string, reducer : Reducer<any, any>, store: Store) => void,
-removeReducer: (key : string, store: Store) => void;
+```javascript
+interface {
+    getReducerMap: () => any,
+    addReducer: (key : string, reducer : Reducer<any, any>, store: Store) => void,
+    removeReducer: (key : string, store: Store) => void,
+}
 ```
 
 ### State accross screens
 #### useContext Provider
-```
+```javascript
 // container screen
 export const UseReduxProvider = React.createContext({
     state: {value: 0},
@@ -216,7 +219,7 @@ Always can use useSelector to get the store value. Or, dispatch action with useD
 useReduxReducer with same key will serve the 1st called function only.
 
 Suggest to use reducer file approach in this case.
-```
+```javascript
 const state = useSelector("YOUR_KEY")
 ```
 
