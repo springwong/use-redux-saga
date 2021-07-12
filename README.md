@@ -49,3 +49,91 @@ setRunSaga(sagaMiddleware.run);
 ```
 
 ## Usage Example
+### useReduxReducer
+
+#### useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: string, cleanUp: boolean = false): [S, Dispatch<any>]
+|params|Description|
+|----|----|
+|reducer|Reducer Type of react redux|
+|key|The reducer key for combinedReducers. The reducer will keep alive if cleanUp = false and cannot recreated.|
+|cleanUp|Default false, automatically remove reducer when FC destoryed if true.|
+```
+const SomeScreen: FC = () => {
+    const [state, dispatch] = useReduxReducer((state = {
+        value: 0
+    }, action : any) => {
+        switch (action.type) {
+            case 'add':
+                return { 
+                    ...state,
+                    value: state.value + 1
+                };
+        }
+        return state;
+    }, "UniqueKey");
+    return <Text>{state.value}</Text>
+}
+```
+or
+```
+const SomeScreen: FC = () => {
+    // someReducer from normal reducer file.
+    const [state, dispatch] = useReduxReducer(someReducer, "UniqueKey");
+    return <Text>{state.value}</Text>
+}
+```
+
+#### useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): [S, Dispatch<any>]
+|params|Description|
+|----|----|
+|reducer|Reducer Type of react redux|
+
+Same as useReduxReducer with auto generated key. Reducer will be removed if FC object is destoryed.
+
+### useSaga
+useSaga will always be destroyed when FC is destoryed. Use useContext Provider to make every events in single location.
+
+#### useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): Task
+|params|Description|
+|----|----|
+|rootSaga|the root Saga|
+|saga|sub sagas that will pass to rootSaga as parameter|
+
+```
+// sample to run saga in run time
+    useSaga(function*(params: any) {
+        yield takeLatest("TEST_1", params.add)
+    }, {
+        add: function* () {
+            yield delay(1000)
+            yield put({
+                type: 'provider_add'
+            })
+        },
+    })
+```
+
+or 
+```
+// demoSaga is normal saga file with exported default. No params required in this case.
+useSaga(demoSaga, {})
+```
+
+#### useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [Task, ((payload: any) => void)]
+useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
+
+```
+    const [task, dispatchPayload]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
+        yield delay(1000)
+        yield put({
+            type: 'provider_add'
+        })
+    });
+
+    // ...
+    return <View onPress={() => {
+        dispatchPayload({
+            value: 0
+        })
+    }} />
+```
