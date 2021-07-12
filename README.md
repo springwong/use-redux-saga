@@ -94,7 +94,7 @@ Same as useReduxReducer with auto generated key. Reducer will be removed if FC o
 ### useSaga
 useSaga will always be destroyed when FC is destoryed. Use useContext Provider to make every events in single location.
 
-#### useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): Task
+#### useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): () => void
 |params|Description|
 |----|----|
 |rootSaga|the root Saga|
@@ -102,7 +102,7 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
 
 ```javascript
 // sample to run saga in run time
-    useSaga(function*(params: any) {
+    const cancelSaga = useSaga(function*(params: any) {
         yield takeLatest("TEST_1", params.add)
     }, {
         add: function* () {
@@ -112,6 +112,8 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
             })
         },
     })
+    
+    // ... later, call cancelSaga() to stop the saga actions
 ```
 
 or 
@@ -120,12 +122,12 @@ or
 useSaga(demoSaga, {})
 ```
 
-#### useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [Task, ((payload: any) => void)]
+#### useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [((payload: any) => void), () => void]
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
 Always use dispatchPayload to trigger this saga.
 
 ```javascript
-    const [task, dispatchPayload]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
+    const [dispatchPayload, cancelSaga]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
         yield delay(1000)
         yield put({
             type: 'provider_add'

@@ -5,13 +5,18 @@ import { takeLatest } from "redux-saga/effects";
 import { useDispatch } from "react-redux";
 import { runSaga } from "./sagaManager";
 
-export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): Task {
+export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): () => void {
     if (!runSaga) {
         console.warn("useSaga without init setRunSaga");
     }
     const ref = useRef<Task>();
     if (!ref.current) {
         ref.current = runSaga(rootSaga, saga);
+    }
+    const cancelSaga = () => {
+        if (ref.current) {
+            ref.current.cancel();
+        }
     }
 
     useEffect(() => {
@@ -21,25 +26,24 @@ export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type):
         if (ref.current && ref.current.isCancelled()) {
             ref.current = runSaga(rootSaga, saga);
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
-        return () => { // clean up
-            if (ref.current) {
-                ref.current.cancel();
-            }
+        return () => { 
+            // clean up
+            cancelSaga();
         }
     }, []);
 
-    return ref.current as Task;
+    return cancelSaga;
 }
 
-export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [Task, ((payload: any) => void)] {
+export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [((payload: any) => void), () => void] {
     const keyRef = useRef<string>();
     if(!keyRef.current) {
         keyRef.current = uuidv4();
     }
-    const task = useSaga(function* (saga) {
+    const cancelSaga = useSaga(function* (saga) {
         yield effect(keyRef.current, saga);
     }, saga);
 
@@ -51,7 +55,7 @@ export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: an
         })
     }
 
-    return [task, dispatchPayload];
+    return [dispatchPayload, cancelSaga];
 }
 
 // export function useSagaEffect<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest, deps: Array<any> = [], blockInitCall: boolean = false): [Task, ((payload: any) => void)] {
