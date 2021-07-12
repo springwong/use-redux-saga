@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from "redux-saga";
 import { takeLatest } from "redux-saga/effects";
