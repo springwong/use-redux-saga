@@ -219,3 +219,8 @@ Suggest to use reducer file approach in this case.
 ```
 const state = useSelector("YOUR_KEY")
 ```
+
+## License
+Copyright (c) 2021 Spring Wong.
+
+Licensed under The MIT License (MIT).
