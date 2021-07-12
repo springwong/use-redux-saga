@@ -113,7 +113,8 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
         },
     })
     
-    // ... later, call cancelSaga() to stop the saga actions
+    // ... in some cases, call cancelSaga() to stop the saga actions manually
+    // cancelSaga is not necessary is most use case.
 ```
 
 or 
@@ -208,6 +209,14 @@ const Container: FC = () => {
             }
         }
     });
+    return <UseReduxProvider.Provider value={{
+        state,
+        dispatches,
+    }} >
+       {
+           //... Other Components
+       }
+    </UseReduxProvider.Provider>
 }
 
 // another screen, useContext
