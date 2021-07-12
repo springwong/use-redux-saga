@@ -1,14 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { ReduxReducerProvider, useRedux, useReduxReducerLocal } from "use-redux-saga";
+import { useRedux, useReduxReducerLocal } from "use-redux-saga";
 import { LandingScreen } from "./src/screens/LandingScreen";
 import { ReduxReducerScreen } from "./src/screens/ReduxReducerScreen";
 import { ReduxSagaScreen } from "./src/screens/ReduxSagaScreen";
 import { ReduxScreen } from "./src/screens/ReduxScreen";
 
 
-export const ReducerProvider = ReduxReducerProvider();
+export const ReducerProvider = React.createContext<[any, React.Dispatch<any>] | undefined>(undefined);
 const Stack = createStackNavigator();
 
 export const UseReduxProvider = React.createContext({
