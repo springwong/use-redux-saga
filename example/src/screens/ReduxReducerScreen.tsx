@@ -104,7 +104,7 @@ export const ReduxReducerScreen: FC = ({navigation}) => {
         }}>
             <Text style={{
                 alignSelf: "center",
-            }}>{`useReduxSingleReducer Dispatch add`}</Text>
+            }}>{`useReduxReducerLocal Dispatch add`}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.button} onPress={() => {
             dispatch({
@@ -113,7 +113,7 @@ export const ReduxReducerScreen: FC = ({navigation}) => {
         }}>
             <Text style={{
                 alignSelf: "center",
-            }}>{`useReduxSingleReducer Dispatch minus`}</Text>
+            }}>{`useReduxReducerLocal Dispatch minus`}</Text>
         </TouchableOpacity>
         <Text style={style.displayText}>{`Reducer Provider Current value: ${globalState.value}`}</Text>
         <TouchableOpacity style={style.button} onPress={() => {
