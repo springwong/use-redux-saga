@@ -26,8 +26,3 @@ export function useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): 
     const keyRef = useRef(uuidv4());
     return useReduxReducer(reducer, keyRef.current, true,)
 }
-
-export function ReduxReducerProvider<S = any, A = any>() {
-    const ReduxReducerProvider = React.createContext<[S, Dispatch<A>] | undefined>(undefined);
-    return ReduxReducerProvider;
-}
