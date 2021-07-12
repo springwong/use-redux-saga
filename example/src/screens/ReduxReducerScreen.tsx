@@ -10,35 +10,6 @@ interface TestState {
     value: number
 }
 
-export function useRedux<StateType, Actions extends {[id: string]: (state: StateType, action: any) => StateType}>(initState: StateType, actions: Actions): { [key in keyof Actions]: (payload: any) => void} {
-    const dispatches : { [key in keyof Actions]: (payload: any) => void } = {} as { [key in keyof Actions]: (payload: any) => void };
-    const dispatch = useDispatch();
-    const store = useStore();
-    Object.keys(actions).forEach(key => {
-        // @ts-ignore
-        dispatches[key] = (payload: any) => {
-            dispatch({
-                type: key,
-                payload,
-            })
-        };
-    })
-    const reducer = (state: StateType = initState, action: any) => {
-        const type = action.type;
-        const takeAction = actions[type];
-        if (takeAction)
-            return takeAction(state, action.payload)
-        return state;
-    }
-    reducerManager?.addReducer("123", reducer, store);
-    useEffect(() => {
-        return () => {
-            reducerManager?.removeReducer("123", store);
-        }
-    }, []);
-    return dispatches;
-}
-
 export const ReduxReducerScreen: FC = ({navigation}) => {
     const [state, dispatch] = useReduxReducer<TestState>((state = {
         value: 0
