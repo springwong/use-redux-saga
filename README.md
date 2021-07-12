@@ -142,7 +142,7 @@ Always use dispatchPayload to trigger this saga.
 |()=>void|Call to cancel this saga immediately|
 
 ```javascript
-    const [dispatchPayload, cancelSaga]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
+    const [dispatchPayload, cancelSaga]: [(payload: any) => void, () => void] = useSagaSimple(function* (payload: any) {
         yield delay(1000)
         yield put({
             type: 'provider_add'
