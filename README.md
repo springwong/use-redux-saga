@@ -51,7 +51,7 @@ setRunSaga(sagaMiddleware.run);
 ## Usage Example
 ### useReduxReducer
 
-#### useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: string, cleanUp: boolean = false): [S, Dispatch<any>]
+#### useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: string, cleanUp: boolean = false): [S]
 |params|Description|
 |----|----|
 |reducer|Reducer Type of react redux|
@@ -60,7 +60,7 @@ setRunSaga(sagaMiddleware.run);
 
 ```javascript
 const SomeScreen: FC = () => {
-    const [state, dispatch] = useReduxReducer((state = {
+    const [state] = useReduxReducer((state = {
         value: 0
     }, action : any) => {
         switch (action.type) {
@@ -79,12 +79,12 @@ or
 ```javascript
 const SomeScreen: FC = () => {
     // someReducer from normal reducer file.
-    const [state, dispatch] = useReduxReducer(someReducer, "UniqueKey");
+    const [state] = useReduxReducer(someReducer, "UniqueKey");
     return <Text>{state.value}</Text>
 }
 ```
 
-#### useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): [S, Dispatch<any>]
+#### useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): [S]
 |params|Description|
 |----|----|
 |reducer|Reducer Type of react redux|
