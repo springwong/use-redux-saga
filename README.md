@@ -121,6 +121,7 @@ useSaga(demoSaga, {})
 
 #### useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [Task, ((payload: any) => void)]
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
+Always use dispatchPayload to trigger this saga.
 
 ```
     const [task, dispatchPayload]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
@@ -136,4 +137,85 @@ useSagaSimple is a simple saga implementation with only one generator function. 
             value: 0
         })
     }} />
+```
+
+### useRedux
+useRedux is a more advanced hook to generic action in redux
+
+### useRedux<StateType, Actions extends { [id: string]: (state: StateType, payload: any) => StateType }>(initState: StateType, actions: Actions): [StateType, { [key in keyof Actions]: (payload: any) => void }]
+
+|params|Description|
+|----|----|
+|state|init State|
+|payload|An object to process each return like normal reducer, 2nd param is payload but not action, action.type is hidden here which is object's key|
+
+```
+    const [state, dispatches] = useRedux({
+        value: 0
+    }, {
+        add: (state, payload) => {
+            return {
+                ...state,
+                value: state.value + 1
+            }
+        },
+        minus: (state, payload) => {
+            return {
+                ...state,
+                value: state.value - 1
+            }
+        },
+    });
+
+    // ...
+    return <View onPress={() => {
+        dispatches.add({
+            // maybe some value
+        })
+    }} ><Text>{state.value}</Text> </View>
+```
+
+### reducerManager
+Normally, don't need to get reducerManager object, but sometimes, you may need to remove reducer with removeReducer() method.
+```
+getReducerMap: () => any;
+addReducer: (key : string, reducer : Reducer<any, any>, store: Store) => void,
+removeReducer: (key : string, store: Store) => void;
+```
+
+### State accross screens
+#### useContext Provider
+```
+// container screen
+export const UseReduxProvider = React.createContext({
+    state: {value: 0},
+    dispatches: {multiple: (payload: any) => {}},
+})
+
+const Container: FC = () => {
+    const [state, dispatches] = useRedux({
+        value: 2
+    }, {
+        multiple: (state, payload) => {
+            return {
+                ...state,
+                value: state.value * 2,
+            }
+        }
+    });
+}
+
+// another screen, useContext
+const reduxConsumer = useContext(UseReduxProvider);
+```
+
+#### useReduxReducer with cleanUp = false
+Reducer will not be duplicated if cleanUp = false.
+Always can use useSelector to get the store value. Or, dispatch action with useDispatch in `react-redux` library.
+
+useReduxReducer with same key will serve the 1st called function only.
+
+Suggest to use reducer file approach in this case.
+```
+const state = useSelector("YOUR_KEY")
 ```
