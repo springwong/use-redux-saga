@@ -45,7 +45,7 @@ export const ReduxSagaScreen: FC = ({navigation}) => {
 
     const cancelDemoSaga = useSaga(demoSaga, {});
 
-    const [globalState, globalDispatch] = useContext(ReducerProvider) as [any, React.Dispatch<any>];
+    const [globalState] = useContext(ReducerProvider) as [any];
 
     return <View style={{
         padding: 16,

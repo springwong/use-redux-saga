@@ -69,7 +69,7 @@ export const ReduxReducerScreen: FC = ({navigation}) => {
     const [demoReState] = useReduxReducer(demoReducer, "Demo", false);
     const demoStateFromSelector = useSelector((state:any) => state["Demo"])
 
-    const [globalState, globalDispatch]: any = useContext(ReducerProvider);
+    const [globalState]: any = useContext(ReducerProvider);
 
     return <View style={{
         padding: 16,
