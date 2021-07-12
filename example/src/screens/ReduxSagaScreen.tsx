@@ -1,7 +1,6 @@
 import React, { FC, useContext, useEffect, useReducer } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useStore } from "react-redux";
-import { Task } from "redux-saga";
 import { delay, put, take, takeEvery, takeLatest } from "redux-saga/effects";
 import { useSaga, useSagaSimple } from "use-redux-saga";
 import { ReducerProvider } from "../../Container";
@@ -30,21 +29,21 @@ export const ReduxSagaScreen: FC = ({navigation}) => {
             })
         }
     })
-    const [_, takeLatestDispatch]: [Task, (payload: any) => void] = useSagaSimple(function* () {
+    const [takeLatestDispatch] = useSagaSimple(function* () {
         yield delay(1000)
         yield put({
             type: 'provider_add'
         })
     });
 
-    const [_x, takeEveryDispatch]: [Task, (payload: any) => void] = useSagaSimple(function* () {
+    const [takeEveryDispatch] = useSagaSimple(function* () {
         yield delay(1000)
         yield put({
             type: 'provider_add'
         })
     }, takeEvery);
 
-    const demoSagaTask = useSaga(demoSaga, {});
+    const cancelDemoSaga = useSaga(demoSaga, {});
 
     const [globalState, globalDispatch] = useContext(ReducerProvider) as [any, React.Dispatch<any>];
 
