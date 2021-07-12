@@ -57,6 +57,8 @@ setRunSaga(sagaMiddleware.run);
 |reducer|Reducer Type of react redux|
 |key|The reducer key for combinedReducers. The reducer will keep alive if cleanUp = false and cannot recreated.|
 |cleanUp|Default false, automatically remove reducer when FC destoryed if true.|
+|Return|Description|
+|S|The state of reducer|
 
 ```javascript
 const SomeScreen: FC = () => {
@@ -88,6 +90,8 @@ const SomeScreen: FC = () => {
 |params|Description|
 |----|----|
 |reducer|Reducer Type of react redux|
+|Return|Description|
+|S|The state of reducer|
 
 Same as useReduxReducer with auto generated key. Reducer will be removed if FC object is destoryed.
 
@@ -99,6 +103,8 @@ useSaga will always be destroyed when FC is destoryed. Use useContext Provider t
 |----|----|
 |rootSaga|the root Saga|
 |saga|sub sagas that will pass to rootSaga as parameter|
+|Return|Description|
+|()=>void|Call to cancel this saga immediately|
 
 ```javascript
 // sample to run saga in run time
@@ -127,6 +133,14 @@ useSaga(demoSaga, {})
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
 Always use dispatchPayload to trigger this saga.
 
+|params|Description|
+|----|----|
+|saga|saga generator method to run|
+|effect|any saga effect that take actions by different behaviour|
+|Return|Description|
+|((payload: any) => void)|Dispatch method with payload parameter|
+|()=>void|Call to cancel this saga immediately|
+
 ```javascript
     const [dispatchPayload, cancelSaga]: [Task, (payload: any) => void] = useSagaSimple(function* (payload: any) {
         yield delay(1000)
@@ -151,7 +165,10 @@ useRedux is a more advanced hook to generic action in redux
 |params|Description|
 |----|----|
 |state|init State|
-|payload|An object to process each return like normal reducer, 2nd param is payload but not action, action.type is hidden here which is object's key|
+|actions|An object to process each return like normal reducer, 2nd param is payload but not action, action.type is hidden here which is object's key|
+|Return|Description|
+|state: StateType|Current state of useRedux|
+|dispatches|The object that could trigger reducer, it's 1-to-1 mapping with input param actions|
 
 ```javascript
     const [state, dispatches] = useRedux({
