@@ -8,7 +8,7 @@ import { ReduxSagaScreen } from "./src/screens/ReduxSagaScreen";
 import { ReduxScreen } from "./src/screens/ReduxScreen";
 
 
-export const ReducerProvider = React.createContext<[any, React.Dispatch<any>] | undefined>(undefined);
+export const ReducerProvider = React.createContext<[any] | undefined>(undefined);
 const Stack = createStackNavigator();
 
 export const UseReduxProvider = React.createContext({

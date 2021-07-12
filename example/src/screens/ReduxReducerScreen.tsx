@@ -11,7 +11,8 @@ interface TestState {
 }
 
 export const ReduxReducerScreen: FC = ({navigation}) => {
-    const [state, dispatch] = useReduxReducer<TestState>((state = {
+    const dispatch = useDispatch();
+    const [state] = useReduxReducer<TestState>((state = {
         value: 0
     }, action : any) => {
         switch (action.type) {
@@ -29,7 +30,7 @@ export const ReduxReducerScreen: FC = ({navigation}) => {
         return state;
     }, "Spring")
     
-    const [singleState, singleDispatch] = useReduxReducerLocal<TestState>((state = {
+    const [singleState] = useReduxReducerLocal<TestState>((state = {
         value: 0
     }, action : any) => {
         switch (action.type) {
@@ -47,7 +48,7 @@ export const ReduxReducerScreen: FC = ({navigation}) => {
         return state;
     })
 
-    const [testState, testDispatch] = useReduxReducerLocal<TestState>((state = {
+    const [testState] = useReduxReducerLocal<TestState>((state = {
         value: 0
     }, action : any) => {
         switch (action.type) {
