@@ -50,6 +50,7 @@ export const SagaApiScreen: FC = ({navigation}) => {
         padding: 16,
     }}>
         <Text style={style.displayText}> {`${SagaApiScreen.name}`} </Text>
+        <Text style={style.displayText}>{`In this list, clicked each button will load next ids detail API and replace the text`}</Text>
         {
             value ? <Text style={style.displayText}>{value}</Text> : <ActivityIndicator />
         }

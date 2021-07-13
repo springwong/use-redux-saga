@@ -27,6 +27,15 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         })) as number;
         setValue(latestValue)
     }, {});
+    const [minusCall] = useSagaSimple(function* (action) {
+        yield put({
+            type: 'minus',
+        })
+        const latestValue = (yield select(state => {
+            return state[reducerKey]['value']
+        })) as number;
+        setValue(latestValue)
+    }, {});
 
     return <View style={{
         padding: 16,
@@ -39,6 +48,11 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
             () => {addCall({})}
         } style={style.button}>
             <Text>{"Press to add"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={
+            () => {minusCall({})}
+        } style={style.button}>
+            <Text>{"Press to minus"}</Text>
         </TouchableOpacity>
     </View>
 }
