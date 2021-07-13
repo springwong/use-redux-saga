@@ -1,8 +1,8 @@
 import React, { FC, useContext, useEffect, useReducer } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ReduxReducerProvider } from "use-redux-saga";
 import { style } from "../../styles";
 import { SagaApiScreen } from "./SagaApiScreen";
+import { SagaReduxReducerScreen } from "./SagaReduxReducerScreen";
 
 export const LandingScreen: FC = ({navigation}) => {
 
@@ -45,6 +45,13 @@ export const LandingScreen: FC = ({navigation}) => {
             <Text style={{
                 alignSelf: "center",
             }}>{`SagaApiScreen Screen`}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={style.button} onPress={() => {
+            navigation.navigate(SagaReduxReducerScreen.name)
+        }}>
+            <Text style={{
+                alignSelf: "center",
+            }}>{`SagaReduxReducerScreen Screen`}</Text>
         </TouchableOpacity>
     </View>
 }
