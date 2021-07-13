@@ -131,13 +131,14 @@ or
 useSaga(demoSaga, {})
 ```
 
-#### useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [((payload: any) => void), () => void]
+#### useSagaSimple<Type>(saga: (sages: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type, effect: any = takeLatest): [((payload: any) => void), () => void]
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
 Always use dispatchPayload to trigger this saga.
 
 |params|Description|
 |----|----|
 |saga|saga generator method to run|
+|useStateVariables|useState variable that passed to function, function* will not keep variable update from useState. So, to make sure the value is most updated in saga call, the value is passed in action.useStateVariables, no default but could pass {}|
 |effect|any saga effect that take actions by different behaviour|
 |Return|Description|
 |((payload: any) => void)|Dispatch method with payload parameter|
