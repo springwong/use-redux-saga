@@ -38,27 +38,7 @@ export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type):
     return cancelSaga;
 }
 
-export function useSagaSimple<Type>(saga: (sages: Type) => Generator, effect: any = takeLatest): [((payload: any) => void), () => void] {
-    const keyRef = useRef<string>();
-    if(!keyRef.current) {
-        keyRef.current = uuidv4();
-    }
-    const cancelSaga = useSaga(function* (saga) {
-        yield effect(keyRef.current, saga);
-    }, saga);
-
-    const dispatch = useDispatch();
-    const dispatchPayload = (payload: any) => {
-        dispatch({
-            type: keyRef.current,
-            payload
-        })
-    }
-
-    return [dispatchPayload, cancelSaga];
-}
-
-export function useSagaSimple2<Type, Vars>(saga: (sages: Type) => Generator, effect: any = takeLatest, useStateVars: Vars): [((payload: any) => void), () => void] {
+export function useSagaSimple<Type>(saga: (sages: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type , effect: any = takeLatest): [((payload: any) => void), () => void] {
     const keyRef = useRef<string>();
     if(!keyRef.current) {
         keyRef.current = uuidv4();
@@ -72,7 +52,7 @@ export function useSagaSimple2<Type, Vars>(saga: (sages: Type) => Generator, eff
         dispatch({
             type: keyRef.current,
             payload,
-            useStateVars,
+            useStateVariables,
         })
     }
 
