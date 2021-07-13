@@ -3,7 +3,7 @@ import React, { FC, useContext, useEffect, useReducer, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { useDispatch, useStore } from "react-redux";
 import { call, delay, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
-import { useRedux, useSaga, useSagaSimple } from "use-redux-saga";
+import { useRedux, useReduxReducerLocal, useSaga, useSagaSimple } from "use-redux-saga";
 import { ReducerProvider } from "../../Container";
 import { style } from "../../styles";
 import demoSaga from "../sagas/demoSaga";
@@ -37,6 +37,22 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         setValue(latestValue)
     }, {});
 
+    const [index, setIndex] = useState(0)
+    const [reduxReducerState, reduxReducerKey] = useReduxReducerLocal((state = {}, action) => {
+        if (action.type === "TEST") {
+            return action.payload;
+        }
+        return state;
+    })
+
+    const [testCall] = useSagaSimple(function* (action) {
+        yield put({type: 'TEST', payload: {foo: `test value  ${action.useStateVariables.index}`}})
+        const foo = yield select(s => s[reduxReducerKey].foo);
+        console.log('foo from selector, expect: latest value,', foo);
+        console.log('foo from useHook, expect: undefined,', reduxReducerState.foo);
+        console.log('foo from saga action, expect: undefined,', action.useStateVariables.reduxReducerState.foo);
+    }, {reduxReducerState, index})
+
     return <View style={{
         padding: 16,
     }}>
@@ -54,5 +70,20 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         } style={style.button}>
             <Text>{"Press to minus"}</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={
+            () => {
+                testCall({})
+                setIndex(index+1)
+            }
+        } style={{
+            ...style.button,
+            marginTop: 40,
+        }}>
+            <Text>{"Dispatch to test 3 diff value source in sagas in console.log"}</Text>
+        </TouchableOpacity>
+        <Text style={style.displayText}>{`*value from useHook is always undefined as ref not change since function created`}</Text>
+        <Text style={style.displayText}>{`*value from saga action is lagged 1 behind selector, because its value is decided before action put`}</Text>
+        <Text style={style.displayText}>{`*value from saga select get the latest expected value because it's sync with store`}</Text>
     </View>
 }
