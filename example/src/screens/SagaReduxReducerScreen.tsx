@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FC, useContext, useEffect, useReducer, useState } from "react";
+import React, { FC, useContext, useEffect, useReducer, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { useDispatch, useStore } from "react-redux";
 import { call, delay, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
@@ -37,7 +37,8 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         setValue(latestValue)
     }, {});
 
-    const [index, setIndex] = useState(0)
+    const [index, setIndex] = useState(0);
+    const indexRef = useRef(0)
     const [reduxReducerState, reduxReducerKey] = useReduxReducerLocal((state = {}, action) => {
         if (action.type === "TEST") {
             return action.payload;
@@ -47,10 +48,13 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
 
     const [testCall] = useSagaSimple(function* (action) {
         yield put({type: 'TEST', payload: {foo: `test value  ${action.useStateVariables.index}`}})
+        indexRef.current = action.useStateVariables.index;
         const foo = yield select(s => s[reduxReducerKey].foo);
+        yield delay(500)
         console.log('foo from selector, expect: latest value,', foo);
-        console.log('foo from useHook, expect: undefined,', reduxReducerState.foo);
-        console.log('foo from saga action, expect: undefined,', action.useStateVariables.reduxReducerState.foo);
+        console.log('foo from useState, expect: undefined,', reduxReducerState.foo);
+        console.log('foo from saga action, undefined in beginning, expect: latest value - 1,', action.useStateVariables.reduxReducerState.foo);
+        console.log('foo from useRef, expect: latest value,', indexRef.current);
     }, {reduxReducerState, index})
 
     return <View style={{
@@ -82,8 +86,10 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         }}>
             <Text>{"Dispatch to test 3 diff value source in sagas in console.log"}</Text>
         </TouchableOpacity>
-        <Text style={style.displayText}>{`*value from useHook is always undefined as ref not change since function created`}</Text>
+        <Text style={style.displayText}>{`Delay 500 millisecond before console.log to prevent any data async issue except selector`}</Text>
+        <Text style={style.displayText}>{`*value from useState is always undefined / unchange as ref not change since function created`}</Text>
         <Text style={style.displayText}>{`*value from saga action is lagged 1 behind selector, because its value is decided before action put`}</Text>
         <Text style={style.displayText}>{`*value from saga select get the latest expected value because it's sync with store`}</Text>
+        <Text style={style.displayText}>{`*value from useRef is another way to always get the latest value from functional component.`}</Text>
     </View>
 }
