@@ -100,6 +100,12 @@ Same as useReduxReducer with auto generated key. Reducer will be removed if FC o
 ### useSaga
 useSaga will always be destroyed when FC is destoryed. Use useContext Provider to make every events in single location.
 
+#### Attentions
+The useState variable inside generator will not be updated when everytime called. The problem is that if you use useState variable directly inside, you may get unexpected value and result.
+To resolve it, it could pass the latest useState value when dispatch by useDispatch.
+useSagaSimple provided useStateVariables variables to pass those values in useStateVariables with code hints.
+Please note that the values of useState variable is locked when passed to generator function. If that value is changed in the middle of saga, the value cannot be reflected. For example, after an API call, and useState value is changed during the call.
+
 #### useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type): () => void
 |params|Description|
 |----|----|
@@ -150,7 +156,7 @@ Always use dispatchPayload to trigger this saga.
         yield put({
             type: 'provider_add'
         })
-    });
+    }, {});
 
     // ...
     return <View onPress={() => {
