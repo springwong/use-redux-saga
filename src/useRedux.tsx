@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 import { reducerManager } from "./reducerManager";
 import { v4 as uuidv4 } from 'uuid';
 
-export function useRedux<StateType, Actions extends { [id: string]: (state: StateType, payload: any) => StateType }>(initState: StateType, actions: Actions): [StateType, { [key in keyof Actions]: (payload: any) => void }] {
+export function useRedux<StateType, Actions extends { [id: string]: (state: StateType, payload: any) => StateType }>(initState: StateType, actions: Actions): [StateType, { [key in keyof Actions]: (payload: any) => void }, string] {
     if (!reducerManager) {
         console.warn("useReduxReducer without init reducerManager");
     }
@@ -35,5 +35,5 @@ export function useRedux<StateType, Actions extends { [id: string]: (state: Stat
         }
     }, []);
     const reducerState = useSelector((state: any) => state[reducerKey]);
-    return [reducerState, dispatches];
+    return [reducerState, dispatches, reducerKey];
 }

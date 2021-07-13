@@ -20,7 +20,8 @@ export function useReduxReducer<S = any, A = any>(reducer: Reducer<S, A>, key: s
     return [state];
 }
 
-export function useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): [S] {
+export function useReduxReducerLocal<S = any, A = any>(reducer: Reducer<S, A>): [S, string] {
     const keyRef = useRef(uuidv4());
-    return useReduxReducer(reducer, keyRef.current, true,)
+    const [state] = useReduxReducer(reducer, keyRef.current, true,);
+    return [state, keyRef.current];
 }
