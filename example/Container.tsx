@@ -6,6 +6,7 @@ import { LandingScreen } from "./src/screens/LandingScreen";
 import { ReduxReducerScreen } from "./src/screens/ReduxReducerScreen";
 import { ReduxSagaScreen } from "./src/screens/ReduxSagaScreen";
 import { ReduxScreen } from "./src/screens/ReduxScreen";
+import { SagaApiScreen } from "./src/screens/SagaApiScreen";
 
 
 export const ReducerProvider = React.createContext<[any] | undefined>(undefined);
@@ -57,6 +58,7 @@ export const Container = () => {
                 <Stack.Screen name={"Duplicate ReduxReducerScreen"} component={ReduxReducerScreen} />
                 <Stack.Screen name={ReduxSagaScreen.name} component={ReduxSagaScreen} />
                 <Stack.Screen name={ReduxScreen.name} component={ReduxScreen} />
+                <Stack.Screen name={SagaApiScreen.name} component={SagaApiScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     </ReducerProvider.Provider>

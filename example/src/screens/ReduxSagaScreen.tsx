@@ -34,14 +34,14 @@ export const ReduxSagaScreen: FC = ({navigation}) => {
         yield put({
             type: 'provider_add'
         })
-    });
+    }, {});
 
     const [takeEveryDispatch] = useSagaSimple(function* () {
         yield delay(1000)
         yield put({
             type: 'provider_add'
         })
-    }, takeEvery);
+    }, {}, takeEvery);
 
     const cancelDemoSaga = useSaga(demoSaga, {});
 
