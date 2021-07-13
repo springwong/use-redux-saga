@@ -25,7 +25,9 @@ yarn add use-redux-saga
 
 ### Reducers
 `use-redux-saga` required to init with the static reducers before combinedReducers.
-The way to insert reducer is based on [react redux document - code splitting](https://redux.js.org/usage/code-splitting)
+The way to insert reducer is based on [react redux document - code splitting](https://redux.js.org/usage/code-splitting).
+
+P.S. createReducerManager and setRunSaga have zero dependencies. If you are aiming to use only one of them. you could simply ingore another init method.
 
 ```javascript
 // Your reducers object before combinedReducers
