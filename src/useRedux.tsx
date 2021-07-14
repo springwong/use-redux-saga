@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { reducerManager } from "./reducerManager";
 import { v4 as uuidv4 } from 'uuid';
@@ -9,18 +9,21 @@ export function useRedux<StateType, Actions extends { [id: string]: (state: Stat
     }
     const keyRef = useRef(uuidv4());
     const reducerKey = keyRef.current;
-    const dispatches: { [key in keyof Actions]: (payload?: any) => void } = {} as { [key in keyof Actions]: (payload: any) => void };
     const dispatch = useDispatch();
     const store = useStore();
-    Object.keys(actions).forEach(key => {
-        // @ts-ignore
-        dispatches[key] = (payload?: any) => {
-            dispatch({
-                type: key,
-                payload,
-            })
-        };
-    })
+    const dispatches = useMemo(() => {
+        const dispatches: { [key in keyof Actions]: (payload?: any) => void } = {} as { [key in keyof Actions]: (payload: any) => void };
+        Object.keys(actions).forEach(key => {
+            // @ts-ignore
+            dispatches[key] = (payload?: any) => {
+                dispatch({
+                    type: key,
+                    payload,
+                })
+            };
+        });
+        return dispatches;
+      }, []);
     const reducer = (state: StateType = initState, action: any) => {
         const type = action.type;
         const takeAction = actions[type];
