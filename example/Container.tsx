@@ -16,7 +16,7 @@ const Stack = createStackNavigator();
 
 export const UseReduxProvider = React.createContext({
     state: {value: 0},
-    dispatches: {multiple: (payload: any) => {}},
+    dispatches: {multiple: (payload?: any) => {}},
 })
 
 export const Container = () => {

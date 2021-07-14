@@ -71,14 +71,14 @@ export const ReduxSagaScreen: FC = ({navigation}) => {
             }}>{`Dispatch Delay takeLatest minus`}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.button} onPress={() => {
-            takeLatestDispatch({})
+            takeLatestDispatch()
         }}>
             <Text style={{
                 alignSelf: "center",
             }}>{`Dispatch with useSagaSimple takeLatest add`}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.button} onPress={() => {
-            takeEveryDispatch({})
+            takeEveryDispatch()
         }}>
             <Text style={{
                 alignSelf: "center",

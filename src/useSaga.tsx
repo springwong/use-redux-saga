@@ -38,7 +38,7 @@ export function useSaga<Type>(rootSaga: (sages: Type) => Generator, saga: Type):
     return cancelSaga;
 }
 
-export function useSagaSimple<Type>(saga: (sages: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type, effect: any = takeLatest): [((payload: any) => void), () => void] {
+export function useSagaSimple<Type>(saga: (sages: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type, effect: any = takeLatest): [((payload?: any) => void), () => void] {
     const keyRef = useRef<string>();
     if(!keyRef.current) {
         keyRef.current = uuidv4();

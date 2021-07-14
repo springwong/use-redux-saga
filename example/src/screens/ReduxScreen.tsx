@@ -31,14 +31,14 @@ export const ReduxScreen: FC = ({navigation}) => {
         <Text style={style.displayText}> {`${ReduxScreen.name}`} </Text>
         <Text style={style.displayText}>{`useRedux Current value: ${state.value}`}</Text>
         <TouchableOpacity style={style.button} onPress={() => {
-            dispatches.add({})
+            dispatches.add()
         }}>
             <Text style={{
                 alignSelf: "center",
             }}>{`useRedux add`}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.button} onPress={() => {
-            dispatches.minus({})
+            dispatches.minus()
         }}>
             <Text style={{
                 alignSelf: "center",
@@ -46,7 +46,7 @@ export const ReduxScreen: FC = ({navigation}) => {
         </TouchableOpacity>
         <Text style={style.displayText}>{`reduxConsumer Current value: ${reduxConsumer.state.value}`}</Text>
         <TouchableOpacity style={style.button} onPress={() => {
-            reduxConsumer.dispatches.multiple({})
+            reduxConsumer.dispatches.multiple()
         }}>
             <Text style={{
                 alignSelf: "center",

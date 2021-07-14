@@ -69,19 +69,19 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         <Text style={style.displayText}>{`useRedux value: ${state.value}`}</Text>
         <Text style={style.displayText}>{`useState value: ${value}`}</Text>
         <TouchableOpacity onPress={
-            () => {addCall({})}
+            () => {addCall()}
         } style={style.button}>
             <Text>{"Press to add"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={
-            () => {minusCall({})}
+            () => {minusCall()}
         } style={style.button}>
             <Text>{"Press to minus"}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={
             () => {
-                testCall({})
+                testCall()
                 setIndex(index+1)
             }
         } style={{
