@@ -312,6 +312,7 @@ const Component: FC = () => {
         })) as number;
         // it has most updated value also from redux state
         console.log(`index directly from : ${selectorValue}`)
+    })
 
     return <TouchableOpacity onPress={
             () => {
@@ -333,7 +334,7 @@ yield select is correct and normal way to retrieve reducer value which is safe t
 |----|----|
 |const [state] = useState()|State ref will be locked when create generator function. Value will not be changed inside generator function with setState function|
 |const [state] = useReducer()|Same as useState, state ref can't be changed once created generator function|
-|const state = useSelector()|Believe that it's same as useState. The reason here is output of useSelector will have ref change when value updated. However, that ref change cannot be updated inside generator function.|
+|const state = useSelector()|Same as useState. The reason here is output of useSelector will have ref change when value updated. However, that ref change cannot be updated inside generator function.|
 |const dispatch = useDispatch();dispatch({type:'xxx', payload:'state from useState'});|Dispatched state will be a copy of state when action dispatched. The state change after action dispatch will not affect the state value in saga parameter. useSagaSimple is supported this way.|
 |const value = yield select(s => s['name'].value;|The saga way to retrieve latest state value. The most updated value will be returned.|
 |const ref = useRef(0); const state = ref.current;|The value will be updated if get from ref.current. However, useRef value change will not trigger screen rendering which is mentioned in react hook documentation. Not suggested to rely on useRef with saga logic as normal practice.|
