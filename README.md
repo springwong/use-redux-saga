@@ -205,6 +205,19 @@ useRedux is a more advanced hook to generic action in redux
     }} ><Text>{state.value}</Text> </View>
 ```
 
+### useStateRef
+
+```javascript
+    const [refState, setRefState] = useStateRef(0);
+
+    useEffect(() => {
+        // get value with state.current which is same as useRef
+        console.log(`refState.current changed: ${refState.current}`)
+    }, [refState.current])
+
+    setRefState(1);
+```
+
 ### reducerManager
 Normally, don't need to get reducerManager object, but sometimes, you may need to remove reducer with removeReducer() method.
 ```javascript
@@ -329,6 +342,8 @@ const Component: FC = () => {
 useRef results in consistent value because it have consistent ref object in its ref. And ref itself do not change in FC lifecycle.
 yield select is correct and normal way to retrieve reducer value which is safe to use whatever in saga file or inline function.
 
+useReduxSaga provided an alternative hook `useStateRef`. It could listen with useEffect and get the latest value within generator method.
+
 ### Summary
 |source|Expection|
 |----|----|
@@ -338,6 +353,7 @@ yield select is correct and normal way to retrieve reducer value which is safe t
 |const dispatch = useDispatch();dispatch({type:'xxx', payload:'state from useState'});|Dispatched state will be a copy of state when action dispatched. The state change after action dispatch will not affect the state value in saga parameter. useSagaSimple is supported this way.|
 |const value = yield select(s => s['name'].value;|The saga way to retrieve latest state value. The most updated value will be returned.|
 |const ref = useRef(0); const state = ref.current;|The value will be updated if get from ref.current. However, useRef value change will not trigger screen rendering which is mentioned in react hook documentation. Not suggested to rely on useRef with saga logic as normal practice.|
+|const [ref, setRef] = useStateRef(0);|This value will be updated in generator as it is useRef based and no ref change during setRef method.|
 
 ## License
 Copyright (c) 2021 Spring Wong.
