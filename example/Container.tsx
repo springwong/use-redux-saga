@@ -6,6 +6,7 @@ import { LandingScreen } from "./src/screens/LandingScreen";
 import { ReduxReducerScreen } from "./src/screens/ReduxReducerScreen";
 import { ReduxSagaScreen } from "./src/screens/ReduxSagaScreen";
 import { ReduxScreen } from "./src/screens/ReduxScreen";
+import { RefSagaScreen } from "./src/screens/RefSagaScreen";
 import { SagaApiScreen } from "./src/screens/SagaApiScreen";
 import { SagaReduxReducerScreen } from "./src/screens/SagaReduxReducerScreen";
 
@@ -61,6 +62,7 @@ export const Container = () => {
                 <Stack.Screen name={ReduxScreen.name} component={ReduxScreen} />
                 <Stack.Screen name={SagaApiScreen.name} component={SagaApiScreen} />
                 <Stack.Screen name={SagaReduxReducerScreen.name} component={SagaReduxReducerScreen} />
+                <Stack.Screen name={RefSagaScreen.name} component={RefSagaScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     </ReducerProvider.Provider>

@@ -1,6 +1,7 @@
 import React, { FC, useContext, useEffect, useReducer } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { style } from "../../styles";
+import { RefSagaScreen } from "./RefSagaScreen";
 import { SagaApiScreen } from "./SagaApiScreen";
 import { SagaReduxReducerScreen } from "./SagaReduxReducerScreen";
 
@@ -52,6 +53,13 @@ export const LandingScreen: FC = ({navigation}) => {
             <Text style={{
                 alignSelf: "center",
             }}>{`SagaReduxReducerScreen Screen`}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={style.button} onPress={() => {
+            navigation.navigate(RefSagaScreen.name)
+        }}>
+            <Text style={{
+                alignSelf: "center",
+            }}>{`RefSagaScreen Screen`}</Text>
         </TouchableOpacity>
     </View>
 }
