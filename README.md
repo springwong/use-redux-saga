@@ -137,7 +137,7 @@ or
 useSaga(demoSaga, {})
 ```
 
-#### useSagaSimple<Type>(saga: (sages: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type, effect: any = takeLatest): [((payload: any) => void), () => void]
+#### useSagaSimple<Type>(saga: (action: {type: string, payload: any, useStateVariables: Type}) => Generator, useStateVariables: Type, effect: any = takeLatest): [((payload: any) => void), () => void]
 useSagaSimple is a simple saga implementation with only one generator function. Effect will affect the behaviour when triggered.
 Always use dispatchPayload to trigger this saga.
 
@@ -151,7 +151,7 @@ Always use dispatchPayload to trigger this saga.
 |()=>void|Call to cancel this saga immediately|
 
 ```javascript
-    const [dispatchPayload, cancelSaga]: [(payload: any) => void, () => void] = useSagaSimple(function* (payload: any) {
+    const [dispatchPayload, cancelSaga]: [(payload: any) => void, () => void] = useSagaSimple(function* (action) {
         yield delay(1000)
         yield put({
             type: 'provider_add'
