@@ -260,6 +260,84 @@ Suggest to use reducer file approach in this case.
 const state = useSelector("YOUR_KEY")
 ```
 
+## Limitation
+For inline generator function in useSaga / useSagaSimple, there are some limitations on mixed up with react hook APIs.
+This limitation is not due to library itself but internal property of generator function and react hook.
+
+### useSaga inline function
+Consider a implementation below in functional component.
+```javascript
+const Component: FC = () => {
+    const [index, setIndex] = useState(0);
+    const [testCall] = useSagaSimple(function* (action) {
+        // it always return initState = 0
+        console.log(`index directly from : ${index}`)
+        // value change by click
+        console.log(`index pass from dispatch: ${action.useStateVariables.index}`)
+    }, {index});
+    return <TouchableOpacity onPress={
+            () => {
+                // add a for index from useState
+                setIndex(index + 1);
+                testCall({});
+            }
+        } style={style.button}>
+            <Text>{"Press to trigger saga"}</Text>
+    </TouchableOpacity>
+}
+```
+Index haven't change by clicks because useState update value with different ref. And generator function will create a snapshot of those values when first time creation.
+
+To simplify the usage, useSagaSimple allow the object to pass through dispatch.
+```
+{index} as last parameter
+get() with action.useStateVariables.index
+```
+However, unlike 'yield select' in normal redux saga, the value is decided when payload is dispatched. So, if value is changed during the call. The value will not be most updated values.
+Consider the saga file in normal practice, 'yield select' is the more 'saga' way to fetch the latest state of reducer values.
+
+Another examples to show alternative:
+```javascript
+const Component: FC = () => {
+    const index = useRef(0);
+    const [state, dispatches, reducerKey] = useRedux({value: 0}, {
+        add: (state, payload) => { return { ...state, value: state.value + 1}},
+    })
+    const [testCall] = useSagaSimple(function* (action) {
+        // it has most updated value when index.current change.
+        console.log(`index directly from : ${index.current}`)
+        // or, for any reducer
+        const selectorValue = (yield select(state => {
+            return state[reducerKey]['value']
+        })) as number;
+        // it has most updated value also from redux state
+        console.log(`index directly from : ${selectorValue}`)
+
+    return <TouchableOpacity onPress={
+            () => {
+                // add 1 for both ref and redux reducer
+                dispatches.add({})
+                index.current = index.current + 1;
+                testCall({});
+            }
+        } style={style.button}>
+            <Text>{"Press to trigger saga"}</Text>
+    </TouchableOpacity>
+}
+```
+useRef results in consistent value because it have consistent ref object in its ref. And ref itself do not change in FC lifecycle.
+yield select is correct and normal way to retrieve reducer value which is safe to use whatever in saga file or inline function.
+
+### Summary
+|source|Expection|
+|----|----|
+|const [state] = useState()|State ref will be locked when create generator function. Value will not be changed inside generator function with setState function|
+|const [state] = useReducer()|Same as useState, state ref can't be changed once created generator function|
+|const state = useSelector()|Believe that it's same as useState. The reason here is output of useSelector will have ref change when value updated. However, that ref change cannot be updated inside generator function.|
+|const dispatch = useDispatch();dispatch({type:'xxx', payload:'state from useState'});|Dispatched state will be a copy of state when action dispatched. The state change after action dispatch will not affect the state value in saga parameter. useSagaSimple is supported this way.|
+|const value = yield select(s => s['name'].value;|The saga way to retrieve latest state value. The most updated value will be returned.|
+|const ref = useRef(0); const state = ref.current;|The value will be updated if get from ref.current. However, useRef value change will not trigger screen rendering which is mentioned in react hook documentation. Not suggested to rely on useRef with saga logic as normal practice.|
+
 ## License
 Copyright (c) 2021 Spring Wong.
 
