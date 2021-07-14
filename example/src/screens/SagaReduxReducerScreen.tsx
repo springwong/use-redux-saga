@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useReducer, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { call, delay, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 import { useRedux, useReduxReducerLocal, useSaga, useSagaSimple } from "use-redux-saga";
@@ -60,7 +61,7 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         console.log('foo from useSelector, expect: undefined,', result);
     }, {reduxReducerState, index})
 
-    return <View style={{
+    return <ScrollView style={{
         padding: 16,
     }}>
         <Text style={style.displayText}> {`${SagaReduxReducerScreen.name}`} </Text>
@@ -95,5 +96,5 @@ export const SagaReduxReducerScreen: FC = ({navigation}) => {
         <Text style={style.displayText}>{`*value from saga yield select get the latest expected value because it's sync with store`}</Text>
         <Text style={style.displayText}>{`*value from useSelector is always undefined / unchange as ref not change since generator function created`}</Text>
         <Text style={style.displayText}>{`*value from useRef is another way to always get the latest value from functional component.`}</Text>
-    </View>
+    </ScrollView>
 }
