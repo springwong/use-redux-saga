@@ -3,26 +3,12 @@ import React, { FC, useContext, useEffect, useReducer, useRef, useState } from "
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { call, delay, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
-import { useRedux, useReduxReducerLocal, useSaga, useSagaSimple } from "use-redux-saga";
+import { useRedux, useReduxReducerLocal, useSaga, useSagaSimple, useStateRef } from "use-redux-saga";
 import { ReducerProvider } from "../../Container";
 import { style } from "../../styles";
 import demoSaga from "../sagas/demoSaga";
 
-function useStateRef<T>(initialState: T) {
-    const ref = useRef<T>(initialState);
-    const [state, setState] = useState(false);
-    const setRef = (newState: T) => {
-        ref.current = newState;
-        setState(!state);
-    }
-    // return [ref.current, setRef] as const;
-    return [{
-        current: ref.current,
-    }, setRef] as const;
-}
-
 export const RefSagaScreen: FC = ({navigation}) => {
-useState
     const ref = useRef(0);
     useEffect(() => {
         console.log("ref.current changed")
@@ -31,12 +17,16 @@ useState
     const [refState, setRefState] = useStateRef(0);
 
     useEffect(() => {
-        console.log("refState.current changed")
+        console.log(`refState changed: ${refState.current}`)
     }, [refState])
 
-    // useEffect(() => {
-    //     console.log("refState.dep changed")
-    // }, [refState.dep])
+    useEffect(() => {
+        console.log(`refState.current changed: ${refState.current}`)
+    }, [refState.current])
+
+    const [call] = useSagaSimple(function* () {
+        console.log(`refState value inside generator: ${refState.current}`)
+    } , {})
 
     return <View style={{
         padding: 16,
@@ -52,10 +42,14 @@ useState
         <Text style={style.displayText}>{`** ref.current add to useEffect dep array but no update which is mentioned also.`}</Text>
         <Text style={style.displayText}>{`useRef value: ${refState.current}`}</Text>
         <TouchableOpacity onPress={
-            () => {setRefState(refState.current + 1)}
+            () => {
+                setRefState(refState.current + 1);
+                call({})
+            }
         } style={style.button}>
-            <Text>{"Click to add ref.current += 1"}</Text>
+            <Text>{"Click to setRefState += 1"}</Text>
         </TouchableOpacity>
-
+        <Text style={style.displayText}>{`*useStateRef can update screen by button click`}</Text>
+        <Text style={style.displayText}>{`**useEffect with stateRef.current also triggered`}</Text>
     </View>
 }

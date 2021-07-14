@@ -3,6 +3,7 @@ import {runSaga, setRunSaga} from "./sagaManager";
 import { useRedux } from "./useRedux";
 import {useReduxReducer, useReduxReducerLocal} from "./useReduxReducer";
 import {useSaga, useSagaSimple} from "./useSaga";
+import { useStateRef } from "./useStateRef";
 
 export {
     reducerManager,
@@ -14,4 +15,5 @@ export {
     runSaga,
     setRunSaga,
     useRedux,
+    useStateRef,
 }
